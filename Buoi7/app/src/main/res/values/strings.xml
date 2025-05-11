@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Buoi7</string>
+    <string name="take_note">Take note</string>
+    <string name="filter">Filter</string>
+    <string name="all_notes">All notes</string>
+    <string name="favourite_notes">Favourite notes</string>
+    <string name="add_note">Add note</string>
+    <string name="save">Save</string>
+    <string name="title">Title</string>
+    <string name="content">Content</string>
+</resources>
