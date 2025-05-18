@@ -2,8 +2,9 @@ package com.ndmq.buoi7
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ndmq.buoi7.data.DataSource
+import androidx.room.Room
 import com.ndmq.buoi7.data.Note
+import com.ndmq.buoi7.data.NoteDatabase
 import com.ndmq.buoi7.databinding.ActivityAddNoteBinding
 
 class AddNoteActivity : AppCompatActivity() {
@@ -14,6 +15,15 @@ class AddNoteActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityAddNoteBinding
+
+
+    private val database by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            NoteDatabase::class.java,
+            "note_database"
+        ).allowMainThreadQueries().build()
+    }
 
 
     private var extraNote: Note? = null
@@ -38,9 +48,9 @@ class AddNoteActivity : AppCompatActivity() {
             val note = Note(title = title, content = content)
             if (extraNote != null) {
                 note.id = extraNote!!.id
-                DataSource.updateNote(note)
+                database.noteDao().updateNote(note)
             } else {
-                DataSource.addNote(note)
+                database.noteDao().addNote(note)
             }
             setResult(RESULT_OK)
             finish()

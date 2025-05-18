@@ -6,8 +6,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.ndmq.buoi7.adapter.NoteAdapter
-import com.ndmq.buoi7.data.DataSource
+import com.ndmq.buoi7.data.NoteDatabase
 import com.ndmq.buoi7.databinding.ActivityAllNotesBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -18,6 +19,14 @@ class AllNotesActivity : AppCompatActivity() {
 
 
     private var getNotesJob: Job? = null
+
+    private val database by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            NoteDatabase::class.java,
+            "note_database"
+        ).allowMainThreadQueries().build()
+    }
 
 
     // Kiểm tra khi nào add note/update note thành công thì mới load lại danh sách
@@ -38,9 +47,9 @@ class AllNotesActivity : AppCompatActivity() {
         },
         onFavourite = { note ->
             if (note.favorite) {
-                DataSource.unFavoriteNote(note.id)
+                database.noteDao().unFavoriteNote(note.id)
             } else {
-                DataSource.favoriteNote(note.id)
+                database.noteDao().favoriteNote(note.id)
             }
         }
     )
@@ -65,7 +74,7 @@ class AllNotesActivity : AppCompatActivity() {
     private fun getNotes() {
         getNotesJob?.cancel()
         getNotesJob = lifecycleScope.launch {
-            val notes = DataSource.getAllNotes()
+            val notes = database.noteDao().getAllNotes()
             noteAdapter.submitData(notes)
         }
     }
